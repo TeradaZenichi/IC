@@ -1,6 +1,6 @@
-##Iniciação científica
+## Iniciação científica
 
-#Reconfiguração das Redes de Distribuição de Energia Elétrica Operando em Diferentes Níveis de Demanda 
+# Reconfiguração das Redes de Distribuição de Energia Elétrica Operando em Diferentes Níveis de Demanda 
 
 Author: Lucas Zenichi Terada
 
