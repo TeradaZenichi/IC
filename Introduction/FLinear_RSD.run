@@ -1,0 +1,43 @@
+# elimina todos os elementos da memória
+reset ;
+
+# muda ao modo modelo
+model FLinear_RSD.mod;
+
+# muda ao modo dado
+data FLinear_RSD.dat;
+
+# PASSO 1
+# Resolver o problema de PLIM, para obter a solução das variáveis de decisão binárias w_ij^*.
+
+# define CPLEX como solucionador ou solver
+option solver cplex;
+option cplex_options "mipdisplay=4 mipgap=0";
+
+# desconsidera no modelo a restrição não linear "calculo_magnitude_corrente_original"
+drop calculo_magnitude_corrente_original;
+
+# soluciona o modelo
+solve custo_perdas;
+
+# PASSO 2
+# Fixas as variáveis de decisão binárias nos valores obtidos no passo 1.
+fix {(i,j) in och} w[i,j];
+
+# PASSO 3
+# Resolver o problema de PNL para obter o ponto de operação exato da rede elétrica.
+option solver ipopt;
+# considera no modelo a restrição não linear "calculo_magnitude_corrente_original"
+restore calculo_magnitude_corrente_original;
+# desconsidera no modelo a restrição não linear "calculo_magnitude_corrente_aproximado"
+drop calculo_magnitude_corrente_aproximado;
+
+# soluciona o modelo
+solve custo_perdas;
+
+# PASSO 4
+# Escrever o relatório de resultados.
+# mostrar os resultados
+include impressao.inc;
+
+

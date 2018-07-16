@@ -1,0 +1,29 @@
+#leitura dos dados do sistema
+include sistema45nos.dat;
+
+#define a dimensão do intervalo de discretização
+let Y := 50;
+
+# fixar a magnitude de tensão da subestação no valor nominal
+fix {i in ob : Tb[i] == 1}
+  Vqdr[i] := Vmax^2;
+
+# fixar a injeção de potencia ativa nos nós de carga iguais a zero
+fix {i in ob : Tb[i] == 0}
+  PS[i] := 0;
+
+# fixar a injeção de potencia reativa nos nós de carga iguais a zero
+fix {i in ob : Tb[i] == 0}
+  QS[i] := 0;
+
+# nomalização e calculo da impedancia ao quadrado
+for {(i,j) in ol} {
+  let R[i,j] := R[i,j] / 1000; # de ohm para kohm
+  let X[i,j] := X[i,j] / 1000; # de ohm para kohm
+  let Z2[i,j] := R[i,j]^2 + X[i,j]^2; # calculo da impedancia
+  let dSmax[i,j] := Vmax * Imax[i,j] / Y;
+  for {y in 1..Y} {
+    let mS[i,j,y] := (2*y - 1) * dSmax[i,j];
+  }  
+}
+
